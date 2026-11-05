@@ -2,20 +2,56 @@ package main
 
 import (
     "fmt"
-    "devdoctor/checks"
+    "os"
+
+    "devdoctor/internal/checks"
+    "devdoctor/internal/packagemanager"
+    "devdoctor/internal/runtimes"
+    "devdoctor/internal/system"
 )
 
 func main() {
-    system := checks.GetSystemInfo()
+    printSystemInfo()
+
+    diagnosticChecks := []checks.Check{
+        runtimes.Node{},
+        packagemanager.Npm{},
+    }
+
+    hasFailure := false
+
+    for _, c := range diagnosticChecks {
+        result := c.Run()
+
+        fmt.Printf("[%s] %s\n", result.Status, result.Check)
+        fmt.Println(result.Message)
+
+        if result.Suggestion != "" {
+            fmt.Println("Suggestion:", result.Suggestion)
+        }
+        fmt.Println()
+
+        if result.Status == checks.StatusFailed {
+            hasFailure = true
+        }
+    }
+
+    if hasFailure {
+        os.Exit(1)
+    }
+}
+
+func printSystemInfo() {
+    info := system.GetInfo()
 
     fmt.Println("DevDoctor - System Information")
     fmt.Println("------------------------------")
-
-    fmt.Println("Operating System:", system.OS)
-    fmt.Println("Architecture:", system.Architecture)
-    fmt.Println("CPU Cores:", system.CPUCores)
-    fmt.Println("Go Version:", system.GoVersion)
-	fmt.Println("Home Directory:", system.HomeDirectory)
-	fmt.Println("Username:", system.Username)
-	fmt.Println("Shell:", system.Shell)
+    fmt.Println("Operating System:", info.OS)
+    fmt.Println("Architecture:", info.Architecture)
+    fmt.Println("CPU Cores:", info.CPUCores)
+    fmt.Println("Go Version:", info.GoVersion)
+    fmt.Println("Home Directory:", info.HomeDirectory)
+    fmt.Println("Username:", info.Username)
+    fmt.Println("Shell:", info.Shell)
+    fmt.Println()
 }
