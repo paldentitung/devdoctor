@@ -2,7 +2,9 @@ package runtimes
 
 import "devdoctor/internal/checks"
 
-// Golang checks that Go is installed and reports its version.
+var minGo = checks.Version{Major: 1, Minor: 26}
+
+// Golang checks that Go is installed and is a supported version.
 type Golang struct{}
 
 func (Golang) Run() checks.Result {
@@ -22,6 +24,15 @@ func (Golang) Run() checks.Result {
 			"Go",
 			"Go was found but its version could not be retrieved.",
 			"Check your Go installation.",
+		)
+	}
+
+	have, ok := checks.ParseVersion(version)
+	if ok && !have.AtLeast(minGo) {
+		return checks.Warning(
+			"Go",
+			"Go "+have.String()+" is older than the required "+minGo.String()+".",
+			"Upgrade Go to "+minGo.String()+" or newer: https://go.dev/dl",
 		)
 	}
 

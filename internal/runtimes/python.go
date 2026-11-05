@@ -2,7 +2,9 @@ package runtimes
 
 import "devdoctor/internal/checks"
 
-// Python checks that Python is installed and reports its version.
+var minPython = checks.Version{Major: 3, Minor: 11}
+
+// Python checks that Python is installed and is a supported version.
 type Python struct{}
 
 func (Python) Run() checks.Result {
@@ -24,6 +26,15 @@ func (Python) Run() checks.Result {
 			"Python",
 			"Python was found but its version could not be retrieved.",
 			"Check your Python installation.",
+		)
+	}
+
+	have, ok := checks.ParseVersion(version)
+	if ok && !have.AtLeast(minPython) {
+		return checks.Warning(
+			"Python",
+			"Python "+have.String()+" is older than the required "+minPython.String()+".",
+			"Upgrade Python to "+minPython.String()+" or newer: https://www.python.org/downloads",
 		)
 	}
 

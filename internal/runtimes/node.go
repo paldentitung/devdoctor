@@ -2,7 +2,7 @@ package runtimes
 
 import "devdoctor/internal/checks"
 
-// Oldest Node.js major version devdoctor accepts. Adjust to your needs.
+
 var minNode = checks.Version{Major: 22}
 
 type Node struct{}
