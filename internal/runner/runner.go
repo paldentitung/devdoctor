@@ -6,8 +6,8 @@ import "devdoctor/internal/checks"
 
 // GroupResult holds the results of one group of checks.
 type GroupResult struct {
-	Name    string
-	Results []checks.Result
+	Name    string          `json:"name"`
+	Results []checks.Result `json:"results"`
 }
 
 // Summary counts results by status.

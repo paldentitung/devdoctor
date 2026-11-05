@@ -9,10 +9,10 @@ const (
 )
 
 type Result struct {
-    Check      string
-    Status     Status
-    Message    string
-    Suggestion string
+	Check      string `json:"check"`
+	Status     Status `json:"status"`
+	Message    string `json:"message"`
+	Suggestion string `json:"suggestion,omitempty"`
 }
 
 func Passed(name, msg string) Result {
