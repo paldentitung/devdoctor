@@ -29,6 +29,7 @@ func colorEnabled(noColorFlag bool) bool {
 	}
 	return info.Mode()&os.ModeCharDevice != 0
 }
+
 // paint colors s with the given ANSI code, or returns it unchanged when color is off.
 func paint(code, s string) string {
 	if !useColor {

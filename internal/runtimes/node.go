@@ -2,7 +2,6 @@ package runtimes
 
 import "devdoctor/internal/checks"
 
-
 var minNode = checks.Version{Major: 22}
 
 type Node struct{}

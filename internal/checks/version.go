@@ -43,7 +43,6 @@ func (v Version) String() string {
 	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
 }
 
-
 // MinVersion builds the final result for a tool whose version was read
 // successfully: a Warning if it is older than min, otherwise Passed.
 // If the version can't be parsed, it passes rather than guessing.

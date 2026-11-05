@@ -1,12 +1,12 @@
 package registry
 
 import (
-    "devdoctor/internal/checks"
-    "devdoctor/internal/packagemanager"
-    "devdoctor/internal/runtimes"
-    "devdoctor/internal/tools"
+	"devdoctor/internal/checks"
 	"devdoctor/internal/database"
+	"devdoctor/internal/packagemanager"
 	"devdoctor/internal/project"
+	"devdoctor/internal/runtimes"
+	"devdoctor/internal/tools"
 )
 
 func Default() []checks.Group {
