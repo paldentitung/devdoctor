@@ -18,14 +18,7 @@ func (Node) Run() checks.Result {
 		return checks.Warning("Node.js", "Node.js was found but its version could not be retrieved.", "Check your Node.js installation.")
 	}
 
-	have, ok := checks.ParseVersion(version)
-	if ok && !have.AtLeast(minNode) {
-		return checks.Warning(
-			"Node.js",
-			"Node.js "+version+" is older than the required "+minNode.String()+".",
-			"Upgrade Node.js to version "+minNode.String()+" or newer: https://nodejs.org",
-		)
-	}
+	return checks.MinVersion("Node.js", version, minNode, "https://nodejs.org")
 
 	return checks.Passed("Node.js", "Node.js is installed: "+version)
 }

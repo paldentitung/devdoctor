@@ -27,14 +27,7 @@ func (Golang) Run() checks.Result {
 		)
 	}
 
-	have, ok := checks.ParseVersion(version)
-	if ok && !have.AtLeast(minGo) {
-		return checks.Warning(
-			"Go",
-			"Go "+have.String()+" is older than the required "+minGo.String()+".",
-			"Upgrade Go to "+minGo.String()+" or newer: https://go.dev/dl",
-		)
-	}
+	return checks.MinVersion("Go", version, minGo, "https://go.dev/dl")
 
 	return checks.Passed("Go", "Go is installed: "+version)
 }

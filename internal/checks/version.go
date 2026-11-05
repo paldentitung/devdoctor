@@ -42,3 +42,19 @@ func (v Version) AtLeast(min Version) bool {
 func (v Version) String() string {
 	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
 }
+
+
+// MinVersion builds the final result for a tool whose version was read
+// successfully: a Warning if it is older than min, otherwise Passed.
+// If the version can't be parsed, it passes rather than guessing.
+func MinVersion(name, raw string, min Version, url string) Result {
+	have, ok := ParseVersion(raw)
+	if ok && !have.AtLeast(min) {
+		return Warning(
+			name,
+			fmt.Sprintf("%s %s is older than the required %s.", name, have, min),
+			fmt.Sprintf("Upgrade %s to %s or newer: %s", name, min, url),
+		)
+	}
+	return Passed(name, name+" is installed: "+raw)
+}

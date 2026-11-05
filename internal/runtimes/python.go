@@ -29,14 +29,7 @@ func (Python) Run() checks.Result {
 		)
 	}
 
-	have, ok := checks.ParseVersion(version)
-	if ok && !have.AtLeast(minPython) {
-		return checks.Warning(
-			"Python",
-			"Python "+have.String()+" is older than the required "+minPython.String()+".",
-			"Upgrade Python to "+minPython.String()+" or newer: https://www.python.org/downloads",
-		)
-	}
-
+	return checks.MinVersion("Python", version, minPython, "https://www.python.org/downloads")
+	
 	return checks.Passed("Python", "Python is installed: "+version)
 }
