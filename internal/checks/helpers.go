@@ -1,22 +1,23 @@
 package checks
 
 import (
-    "fmt"
-    "net"
-    "os"
-    "os/exec"
-    "strings"
-    "context"
+	"context"
+	"fmt"
+	"net"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
-// Is the command available in PATH? Returns its full path.
+// FindInPath reports whether the command is available in PATH and returns its full path.
 func FindInPath(command string) (string, bool) {
-    path, err := exec.LookPath(command)
-    return path, err == nil
+	path, err := exec.LookPath(command)
+	return path, err == nil
 }
 
-// Runs "<command> --version" (or custom args) and returns the trimmed output.
+// GetVersion runs "<command> --version" (or custom args) and returns the trimmed output.
 // It gives up after 5 seconds.
 func GetVersion(path string, args ...string) (string, error) {
 	if len(args) == 0 {
@@ -26,25 +27,31 @@ func GetVersion(path string, args ...string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	out, err := exec.CommandContext(ctx, path, args...).Output()
+	cmd := exec.CommandContext(ctx, path, args...)
+	cmd.WaitDelay = time.Second
+
+	out, err := cmd.Output()
+	if ctx.Err() == context.DeadlineExceeded {
+		return "", fmt.Errorf("%s timed out after 5s", filepath.Base(path))
+	}
 	if err != nil {
 		return "", err
 	}
 	return strings.TrimSpace(string(out)), nil
 }
 
-// Does a file or folder exist?
+// FileExists reports whether a file or folder exists.
 func FileExists(path string) bool {
-    _, err := os.Stat(path)
-    return err == nil
+	_, err := os.Stat(path)
+	return err == nil
 }
 
-// Is a local TCP port free?
+// PortIsFree reports whether a local TCP port is free.
 func PortIsFree(port int) bool {
-    ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-    if err != nil {
-        return false
-    }
-    ln.Close()
-    return true
+	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		return false
+	}
+	ln.Close()
+	return true
 }
