@@ -4,42 +4,41 @@ import (
     "fmt"
     "os"
 
-    "devdoctor/internal/checks"
-    "devdoctor/internal/packagemanager"
-    "devdoctor/internal/runtimes"
+    "devdoctor/internal/registry"
+    "devdoctor/internal/runner"
     "devdoctor/internal/system"
-    "devdoctor/internal/tools"
 )
 
 func main() {
     printSystemInfo()
 
-    diagnosticChecks := []checks.Check{
-        runtimes.Node{},
-        packagemanager.Npm{},
-        tools.Git{},
-    }
+    results := runner.Run(registry.Default())
 
-    hasFailure := false
+    printResults(results)
 
-    for _, c := range diagnosticChecks {
-        result := c.Run()
+    summary := runner.Summarize(results)
+    fmt.Printf("Passed: %d  Warnings: %d  Failed: %d\n",
+        summary.Passed, summary.Warnings, summary.Failed)
 
-        fmt.Printf("[%s] %s\n", result.Status, result.Check)
-        fmt.Println(result.Message)
-
-        if result.Suggestion != "" {
-            fmt.Println("Suggestion:", result.Suggestion)
-        }
-        fmt.Println()
-
-        if result.Status == checks.StatusFailed {
-            hasFailure = true
-        }
-    }
-
-    if hasFailure {
+    if summary.Failed > 0 {
         os.Exit(1)
+    }
+}
+
+func printResults(groups []runner.GroupResult) {
+    for _, g := range groups {
+        fmt.Println(g.Name)
+        fmt.Println("------------------------------")
+
+        for _, r := range g.Results {
+            fmt.Printf("[%s] %s\n", r.Status, r.Check)
+            fmt.Println(r.Message)
+
+            if r.Suggestion != "" {
+                fmt.Println("Suggestion:", r.Suggestion)
+            }
+            fmt.Println()
+        }
     }
 }
 
