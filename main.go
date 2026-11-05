@@ -8,6 +8,7 @@ import (
     "devdoctor/internal/packagemanager"
     "devdoctor/internal/runtimes"
     "devdoctor/internal/system"
+    "devdoctor/internal/tools"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
     diagnosticChecks := []checks.Check{
         runtimes.Node{},
         packagemanager.Npm{},
+        tools.Git{},
     }
 
     hasFailure := false
