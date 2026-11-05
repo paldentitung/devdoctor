@@ -6,6 +6,8 @@ import (
     "os"
     "os/exec"
     "strings"
+    "context"
+	"time"
 )
 
 // Is the command available in PATH? Returns its full path.
@@ -15,15 +17,20 @@ func FindInPath(command string) (string, bool) {
 }
 
 // Runs "<command> --version" (or custom args) and returns the trimmed output.
+// It gives up after 5 seconds.
 func GetVersion(path string, args ...string) (string, error) {
-    if len(args) == 0 {
-        args = []string{"--version"}
-    }
-    out, err := exec.Command(path, args...).Output()
-    if err != nil {
-        return "", err
-    }
-    return strings.TrimSpace(string(out)), nil
+	if len(args) == 0 {
+		args = []string{"--version"}
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	out, err := exec.CommandContext(ctx, path, args...).Output()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(out)), nil
 }
 
 // Does a file or folder exist?
