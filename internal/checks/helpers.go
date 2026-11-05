@@ -55,3 +55,16 @@ func PortIsFree(port int) bool {
 	ln.Close()
 	return true
 }
+
+
+// CanConnect reports whether something is accepting TCP connections on
+// host:port. It gives up after 2 seconds, so it can't hang.
+func CanConnect(host string, port int) bool {
+	addr := net.JoinHostPort(host, fmt.Sprint(port))
+	conn, err := net.DialTimeout("tcp", addr, 2*time.Second)
+	if err != nil {
+		return false
+	}
+	conn.Close()
+	return true
+}

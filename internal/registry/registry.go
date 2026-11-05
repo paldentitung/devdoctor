@@ -25,7 +25,8 @@ func Default() []checks.Group {
 			tools.Curl{},
 		}},
 		{Name: "Databases", Checks: []checks.Check{
-			database.Postgres{},
+		database.Postgres{},
+		database.MongoDB{},
 		}},
 		{Name: "Project", Checks: []checks.Check{
 			project.PackageJSON{},
