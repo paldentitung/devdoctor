@@ -5,6 +5,8 @@ import (
     "devdoctor/internal/packagemanager"
     "devdoctor/internal/runtimes"
     "devdoctor/internal/tools"
+	"devdoctor/internal/database"
+	"devdoctor/internal/project"
 )
 
 func Default() []checks.Group {
@@ -12,6 +14,7 @@ func Default() []checks.Group {
 		{Name: "Runtimes", Checks: []checks.Check{
 			runtimes.Node{},
 			runtimes.Golang{},
+			runtimes.Python{},
 		}},
 		{Name: "Package managers", Checks: []checks.Check{
 			packagemanager.Npm{},
@@ -19,6 +22,14 @@ func Default() []checks.Group {
 		{Name: "Tools", Checks: []checks.Check{
 			tools.Git{},
 			tools.Docker{},
+			tools.Curl{},
+		}},
+		{Name: "Databases", Checks: []checks.Check{
+			database.Postgres{},
+		}},
+		{Name: "Project", Checks: []checks.Check{
+			project.PackageJSON{},
+			project.Port{Number: 3000},
 		}},
 	}
 }
