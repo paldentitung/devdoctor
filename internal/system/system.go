@@ -1,4 +1,4 @@
-package checks
+package system
 
 import (
     "os"
@@ -6,7 +6,7 @@ import (
     "runtime"
 )
 
-type SystemInfo struct {
+type Info struct {
     OS            string
     Architecture  string
     CPUCores      int
@@ -16,7 +16,7 @@ type SystemInfo struct {
     Shell         string
 }
 
-func GetSystemInfo() SystemInfo {
+func GetInfo() Info {
     currentUser, _ := user.Current()
     homeDir, _ := os.UserHomeDir()
 
@@ -25,7 +25,7 @@ func GetSystemInfo() SystemInfo {
         username = currentUser.Username
     }
 
-    return SystemInfo{
+    return Info{
         OS:            runtime.GOOS,
         Architecture:  runtime.GOARCH,
         CPUCores:      runtime.NumCPU(),
