@@ -3,6 +3,7 @@ package registry
 import (
 	"devdoctor/internal/checks"
 	"devdoctor/internal/database"
+	"devdoctor/internal/detect"
 	"devdoctor/internal/packagemanager"
 	"devdoctor/internal/project"
 	"devdoctor/internal/runtimes"
@@ -10,18 +11,20 @@ import (
 )
 
 func Default() []checks.Group {
+	nodeLike := []detect.Type{detect.Node, detect.TypeScript}
+
 	return []checks.Group{
 		{Name: "Runtimes", Checks: []checks.Check{
-			runtimes.Node{},
-			runtimes.Golang{},
-			runtimes.Python{},
+			checks.For(runtimes.Node{}, nodeLike...),
+			checks.For(runtimes.Golang{}, detect.Go),
+			checks.For(runtimes.Python{}, detect.Python),
 		}},
 		{Name: "Package managers", Checks: []checks.Check{
-			packagemanager.Npm{},
+			checks.For(packagemanager.Npm{}, nodeLike...),
 		}},
 		{Name: "Tools", Checks: []checks.Check{
 			tools.Git{},
-			tools.Docker{},
+			checks.For(tools.Docker{}, detect.Docker),
 			tools.Curl{},
 		}},
 		{Name: "Databases", Checks: []checks.Check{
@@ -29,7 +32,7 @@ func Default() []checks.Group {
 			database.MongoDB{},
 		}},
 		{Name: "Project", Checks: []checks.Check{
-			project.PackageJSON{},
+			checks.For(project.PackageJSON{}, nodeLike...),
 			project.Port{Number: 3000},
 		}},
 	}

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"devdoctor/internal/detect"
 	"devdoctor/internal/registry"
 	"devdoctor/internal/runner"
 	"devdoctor/internal/system"
@@ -22,6 +23,7 @@ func main() {
 	noColor := flag.Bool("no-color", false, "disable colored output")
 	showVersion := flag.Bool("version", false, "print devdoctor's version and exit")
 	only := flag.String("only", "", "run only the group with this name (e.g. runtimes)")
+	typeFlag := flag.String("type", "", "comma-separated project types to check instead of auto-detecting (node,typescript,python,go,docker)")
 	flag.Parse()
 
 	if *showVersion {
@@ -31,7 +33,14 @@ func main() {
 
 	useColor = colorEnabled(*noColor)
 
-	results := runner.Run(registry.Default())
+	use, detected, err := resolveTypes(*typeFlag)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
+
+	results := runner.Run(runner.Select(registry.Default(), use))
 
 	if *only != "" {
 		results = filterGroups(results, *only)
@@ -47,6 +56,7 @@ func main() {
 		printJSON(results)
 	} else {
 		printSystemInfo()
+		printDetected(use, detected, *typeFlag != "")
 		printResults(results)
 		printSummary(summary.Passed, summary.Warnings, summary.Failed)
 	}
@@ -54,6 +64,17 @@ func main() {
 	if summary.Failed > 0 {
 		os.Exit(1)
 	}
+}
+
+// resolveTypes uses the --type flag if given, otherwise auto-detects
+// from marker files in the current directory.
+func resolveTypes(flagValue string) (use []detect.Type, detected []detect.Type, err error) {
+	detected = detect.Detect(".")
+	if flagValue == "" {
+		return detected, detected, nil
+	}
+	use, err = detect.Parse(flagValue)
+	return use, detected, err
 }
 
 // filterGroups keeps only groups whose name matches (case-insensitive).
@@ -88,5 +109,25 @@ func printSystemInfo() {
 	fmt.Println("Home Directory:", info.HomeDirectory)
 	fmt.Println("Username:", info.Username)
 	fmt.Println("Shell:", info.Shell)
+	fmt.Println()
+}
+
+// printDetected tells the user which project types were used to pick checks.
+func printDetected(use, detected []detect.Type, forced bool) {
+	detectedStr := strings.Join(detect.Strings(detected), ", ")
+	if detectedStr == "" {
+		detectedStr = "none"
+	}
+
+	checksStr := strings.Join(detect.Strings(use), ", ")
+	switch {
+	case forced:
+		checksStr += " (override via --type)"
+	case checksStr == "":
+		checksStr = "general checks only (use --type to choose)"
+	}
+
+	fmt.Println("Detected project:", detectedStr)
+	fmt.Println("Checks for:      ", checksStr)
 	fmt.Println()
 }
