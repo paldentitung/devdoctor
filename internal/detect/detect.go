@@ -3,7 +3,6 @@ package detect
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -30,11 +29,25 @@ var markers = []struct {
 }
 
 // Detect returns every project type whose marker file exists in root.
-func Detect(root string) []Type {
+func Detect(dir string) []Type {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil
+	}
+
+	// Real on-disk names, so "Go.mod" never equals "go.mod",
+	// even on case-insensitive filesystems.
+	present := make(map[string]bool, len(entries))
+	for _, e := range entries {
+		if !e.IsDir() {
+			present[e.Name()] = true
+		}
+	}
+
 	var found []Type
 	for _, m := range markers {
-		for _, f := range m.Files {
-			if _, err := os.Stat(filepath.Join(root, f)); err == nil {
+		for _, name := range m.Files {
+			if present[name] {
 				found = append(found, m.Type)
 				break
 			}
@@ -42,7 +55,6 @@ func Detect(root string) []Type {
 	}
 	return found
 }
-
 // Parse turns "node,python" (from --type) into types, rejecting unknown names.
 func Parse(s string) ([]Type, error) {
 	var out []Type
