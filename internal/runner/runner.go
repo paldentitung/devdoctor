@@ -3,6 +3,7 @@
 package runner
 
 import "devdoctor/internal/checks"
+import "devdoctor/internal/detect"
 
 // GroupResult holds the results of one group of checks.
 type GroupResult struct {
@@ -53,4 +54,37 @@ func Summarize(results []GroupResult) Summary {
 	}
 
 	return s
+}
+
+// Select drops checks that don't apply to the detected types, and drops
+// groups left empty. Checks that aren't Scoped always stay.
+func Select(groups []checks.Group, detected []detect.Type) []checks.Group {
+	have := make(map[detect.Type]bool, len(detected))
+	for _, t := range detected {
+		have[t] = true
+	}
+
+	var out []checks.Group
+	for _, g := range groups {
+		ng := checks.Group{Name: g.Name}
+		for _, c := range g.Checks {
+			if s, ok := c.(checks.Scoped); ok && !matches(s.Types, have) {
+				continue
+			}
+			ng.Checks = append(ng.Checks, c)
+		}
+		if len(ng.Checks) > 0 {
+			out = append(out, ng)
+		}
+	}
+	return out
+}
+
+func matches(types []detect.Type, have map[detect.Type]bool) bool {
+	for _, t := range types {
+		if have[t] {
+			return true
+		}
+	}
+	return false
 }
