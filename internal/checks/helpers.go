@@ -56,7 +56,6 @@ func PortIsFree(port int) bool {
 	return true
 }
 
-
 // CanConnect reports whether something is accepting TCP connections on
 // host:port. It gives up after 2 seconds, so it can't hang.
 func CanConnect(host string, port int) bool {

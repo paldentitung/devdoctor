@@ -19,5 +19,4 @@ func (Node) Run() checks.Result {
 
 	return checks.MinVersion("Node.js", version, minNode, "https://nodejs.org")
 
-	return checks.Passed("Node.js", "Node.js is installed: "+version)
 }

@@ -28,5 +28,4 @@ func (Git) Run() checks.Result {
 
 	return checks.MinVersion("Git", version, minGit, "https://git-scm.com")
 
-	return checks.Passed("Git", "Git is installed: "+version)
 }

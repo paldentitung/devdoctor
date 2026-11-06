@@ -31,5 +31,4 @@ func (Python) Run() checks.Result {
 
 	return checks.MinVersion("Python", version, minPython, "https://www.python.org/downloads")
 
-	return checks.Passed("Python", "Python is installed: "+version)
 }

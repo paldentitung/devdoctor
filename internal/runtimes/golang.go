@@ -29,5 +29,4 @@ func (Golang) Run() checks.Result {
 
 	return checks.MinVersion("Go", version, minGo, "https://go.dev/dl")
 
-	return checks.Passed("Go", "Go is installed: "+version)
 }
