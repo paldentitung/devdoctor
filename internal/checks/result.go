@@ -3,9 +3,9 @@ package checks
 type Status string
 
 const (
-    StatusPassed  Status = "passed"
-    StatusWarning Status = "warning"
-    StatusFailed  Status = "failed"
+	StatusPassed  Status = "passed"
+	StatusWarning Status = "warning"
+	StatusFailed  Status = "failed"
 )
 
 type Result struct {
@@ -16,11 +16,11 @@ type Result struct {
 }
 
 func Passed(name, msg string) Result {
-    return Result{Check: name, Status: StatusPassed, Message: msg}
+	return Result{Check: name, Status: StatusPassed, Message: msg}
 }
 func Warning(name, msg, fix string) Result {
-    return Result{Check: name, Status: StatusWarning, Message: msg, Suggestion: fix}
+	return Result{Check: name, Status: StatusWarning, Message: msg, Suggestion: fix}
 }
 func Failed(name, msg, fix string) Result {
-    return Result{Check: name, Status: StatusFailed, Message: msg, Suggestion: fix}
+	return Result{Check: name, Status: StatusFailed, Message: msg, Suggestion: fix}
 }

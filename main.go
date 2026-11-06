@@ -5,17 +5,42 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"devdoctor/internal/registry"
 	"devdoctor/internal/runner"
 	"devdoctor/internal/system"
 )
 
+// version is overridden at build time:
+//
+//	go build -ldflags "-X main.version=0.1.0"
+var version = "dev"
+
 func main() {
 	jsonOutput := flag.Bool("json", false, "print results as JSON")
+	noColor := flag.Bool("no-color", false, "disable colored output")
+	showVersion := flag.Bool("version", false, "print devdoctor's version and exit")
+	only := flag.String("only", "", "run only the group with this name (e.g. runtimes)")
 	flag.Parse()
 
+	if *showVersion {
+		fmt.Println("devdoctor", version)
+		return
+	}
+
+	useColor = colorEnabled(*noColor)
+
 	results := runner.Run(registry.Default())
+
+	if *only != "" {
+		results = filterGroups(results, *only)
+		if len(results) == 0 {
+			fmt.Fprintf(os.Stderr, "no group matches %q\n", *only)
+			os.Exit(2)
+		}
+	}
+
 	summary := runner.Summarize(results)
 
 	if *jsonOutput {
@@ -23,13 +48,23 @@ func main() {
 	} else {
 		printSystemInfo()
 		printResults(results)
-		fmt.Printf("Passed: %d  Warnings: %d  Failed: %d\n",
-			summary.Passed, summary.Warnings, summary.Failed)
+		printSummary(summary.Passed, summary.Warnings, summary.Failed)
 	}
 
 	if summary.Failed > 0 {
 		os.Exit(1)
 	}
+}
+
+// filterGroups keeps only groups whose name matches (case-insensitive).
+func filterGroups(groups []runner.GroupResult, name string) []runner.GroupResult {
+	var out []runner.GroupResult
+	for _, g := range groups {
+		if strings.EqualFold(g.Name, name) {
+			out = append(out, g)
+		}
+	}
+	return out
 }
 
 func printJSON(results []runner.GroupResult) {
@@ -38,23 +73,6 @@ func printJSON(results []runner.GroupResult) {
 	if err := enc.Encode(results); err != nil {
 		fmt.Fprintln(os.Stderr, "failed to encode JSON:", err)
 		os.Exit(1)
-	}
-}
-
-func printResults(groups []runner.GroupResult) {
-	for _, g := range groups {
-		fmt.Println(g.Name)
-		fmt.Println("------------------------------")
-
-		for _, r := range g.Results {
-			fmt.Printf("[%s] %s\n", r.Status, r.Check)
-			fmt.Println(r.Message)
-
-			if r.Suggestion != "" {
-				fmt.Println("Suggestion:", r.Suggestion)
-			}
-			fmt.Println()
-		}
 	}
 }
 

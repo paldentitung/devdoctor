@@ -1,10 +1,10 @@
 package checks
 
 type Check interface {
-    Run() Result
+	Run() Result
 }
 
 type Group struct {
-    Name   string
-    Checks []Check
+	Name   string
+	Checks []Check
 }
