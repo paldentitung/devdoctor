@@ -8,9 +8,10 @@ import (
 	"devdoctor/internal/project"
 	"devdoctor/internal/runtimes"
 	"devdoctor/internal/tools"
+	"devdoctor/internal/analyze"
 )
 
-func Default() []checks.Group {
+func Default(analyses []analyze.Analysis) []checks.Group {
 	nodeLike := []detect.Type{detect.Node, detect.TypeScript}
 
 	return []checks.Group{
@@ -33,7 +34,7 @@ func Default() []checks.Group {
 		}},
 		{Name: "Project", Checks: []checks.Check{
 			checks.For(project.PackageJSON{}, nodeLike...),
-			project.Port{Number: 3000},
+			project.Port{Number: defaultPort(analyses)},
 		}},
 	}
 }

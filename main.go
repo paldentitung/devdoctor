@@ -11,6 +11,7 @@ import (
 	"devdoctor/internal/registry"
 	"devdoctor/internal/runner"
 	"devdoctor/internal/system"
+	"devdoctor/internal/analyze"
 )
 
 // version is overridden at build time:
@@ -34,13 +35,13 @@ func main() {
 	useColor = colorEnabled(*noColor)
 
 	use, detected, err := resolveTypes(*typeFlag)
-
+	analyses := analyze.Analyze(".", use)		
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(2)
 	}
 
-	results := runner.Run(runner.Select(registry.Default(), use))
+	results := runner.Run(runner.Select(registry.Default(analyses), use))
 
 	if *only != "" {
 		results = filterGroups(results, *only)
@@ -57,6 +58,7 @@ func main() {
 	} else {
 		printSystemInfo()
 		printDetected(use, detected, *typeFlag != "")
+		printAnalysis(analyses)
 		printResults(results)
 		printSummary(summary.Passed, summary.Warnings, summary.Failed)
 	}
@@ -75,6 +77,28 @@ func resolveTypes(flagValue string) (use []detect.Type, detected []detect.Type, 
 	}
 	use, err = detect.Parse(flagValue)
 	return use, detected, err
+}
+
+// printAnalysis shows what was read from the project's own files.
+func printAnalysis(analyses []analyze.Analysis) {
+	for _, a := range analyses {
+		fmt.Printf("%s project:\n", a.Type)
+		for _, f := range a.Frameworks {
+			fmt.Printf("  Framework:       %s  (%s)\n", f.Name, f.Evidence)
+		}
+		if a.PackageManager != "" {
+			fmt.Printf("  Package manager: %s\n", a.PackageManager)
+		}
+		if a.Requires != nil {
+			fmt.Printf("  Requires:        %s %s  (%s)\n", a.Requires.Tool, a.Requires.Raw, a.Requires.Source)
+		}
+		for _, w := range a.Warnings {
+			fmt.Printf("  Warning:         %s\n", w)
+		}
+	}
+	if len(analyses) > 0 {
+		fmt.Println()
+	}
 }
 
 // filterGroups keeps only groups whose name matches (case-insensitive).
