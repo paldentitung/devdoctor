@@ -1,6 +1,6 @@
 package checks
 
-import "devdoctor/internal/detect"
+import "github.com/paldentitung/devdoctor/internal/detect"
 
 type Check interface {
 	Run() Result

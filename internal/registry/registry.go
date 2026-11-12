@@ -1,14 +1,14 @@
 package registry
 
 import (
-	"devdoctor/internal/analyze"
-	"devdoctor/internal/checks"
-	"devdoctor/internal/database"
-	"devdoctor/internal/detect"
-	"devdoctor/internal/packagemanager"
-	"devdoctor/internal/project"
-	"devdoctor/internal/runtimes"
-	"devdoctor/internal/tools"
+	"github.com/paldentitung/devdoctor/internal/analyze"
+	"github.com/paldentitung/devdoctor/internal/checks"
+	"github.com/paldentitung/devdoctor/internal/database"
+	"github.com/paldentitung/devdoctor/internal/detect"
+	"github.com/paldentitung/devdoctor/internal/packagemanager"
+	"github.com/paldentitung/devdoctor/internal/project"
+	"github.com/paldentitung/devdoctor/internal/runtimes"
+	"github.com/paldentitung/devdoctor/internal/tools"
 )
 
 func Default(analyses []analyze.Analysis) []checks.Group {

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"devdoctor/internal/detect"
+	"github.com/paldentitung/devdoctor/internal/detect"
 )
 
 // How to recognise Go frameworks and libraries. A Go module is named by its

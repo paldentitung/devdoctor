@@ -1,6 +1,6 @@
 package runtimes
 
-import "devdoctor/internal/checks"
+import "github.com/paldentitung/devdoctor/internal/checks"
 
 var minGo = checks.Version{Major: 1, Minor: 26}
 

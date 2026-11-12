@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"devdoctor/internal/checks"
+	"github.com/paldentitung/devdoctor/internal/checks"
 )
 
 const mongoPort = 27017

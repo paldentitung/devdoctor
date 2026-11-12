@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"devdoctor/internal/detect"
+	"github.com/paldentitung/devdoctor/internal/detect"
 )
 
 // project writes the given files (name -> content) into a fresh temp dir.

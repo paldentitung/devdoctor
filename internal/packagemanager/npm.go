@@ -1,6 +1,6 @@
 package packagemanager
 
-import "devdoctor/internal/checks"
+import "github.com/paldentitung/devdoctor/internal/checks"
 
 type Npm struct{}
 

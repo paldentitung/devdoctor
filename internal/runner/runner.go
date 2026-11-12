@@ -2,8 +2,8 @@
 // It only produces data; printing is left to the caller (main.go).
 package runner
 
-import "devdoctor/internal/checks"
-import "devdoctor/internal/detect"
+import "github.com/paldentitung/devdoctor/internal/checks"
+import "github.com/paldentitung/devdoctor/internal/detect"
 
 // GroupResult holds the results of one group of checks.
 type GroupResult struct {

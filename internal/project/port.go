@@ -3,7 +3,7 @@ package project
 import (
 	"fmt"
 
-	"devdoctor/internal/checks"
+	"github.com/paldentitung/devdoctor/internal/checks"
 )
 
 // Port checks that a local TCP port is free.

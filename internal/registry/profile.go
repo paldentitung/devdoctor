@@ -1,8 +1,8 @@
 package registry
 
 import (
-	"devdoctor/internal/analyze"
-	"devdoctor/internal/checks"
+	"github.com/paldentitung/devdoctor/internal/analyze"
+	"github.com/paldentitung/devdoctor/internal/checks"
 )
 
 const fallbackPort = 3000

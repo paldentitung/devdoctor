@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"devdoctor/internal/detect"
+	"github.com/paldentitung/devdoctor/internal/detect"
 )
 
 // How to recognise Python frameworks and libraries. Names are written the way

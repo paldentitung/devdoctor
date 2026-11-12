@@ -1,6 +1,6 @@
 package project
 
-import "devdoctor/internal/checks"
+import "github.com/paldentitung/devdoctor/internal/checks"
 
 // PackageJSON checks that package.json exists in the current folder.
 type PackageJSON struct{}
