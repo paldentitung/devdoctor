@@ -10,36 +10,25 @@ import (
 // That way each rule is a single word and can be split on spaces safely.
 var opSpaceRe = regexp.MustCompile(`(>=|<=|==|~=|!=|\^|~|>|<|=)\s+`)
 
-// lowerBoundOps are the operators that name the LOWEST allowed version
-// (">=18" means "18 or newer"). Longer operators come first so that ">="
-// is not mistaken for ">".
 var lowerBoundOps = []string{">=", "==", "~=", "^", "~", "=", ">"}
 
-// ParseMinConstraint answers one question about a project's version rule:
-// "what is the lowest version it allows?"
+// ParseMinConstraint extracts the lowest allowed version from a project
+// version constraint.
 //
-// Projects write these rules in different styles, and this understands the
-// common ones from npm, Go and Python:
+// It supports common version formats used by npm, Go and Python, including
+// comparison operators (>=18), caret (^18.2), tilde (~3.11), wildcards
+// (==3.9.*), plain versions (18, v20.1), and ranges (1.2 - 1.5).
 //
-//	>=18          18 or newer                          -> 18.0.0
-//	^18.2         18.2 up to (not including) 19        -> 18.2.0
-//	~3.11         3.11 and its patch releases          -> 3.11.0
-//	~=3.9         Python's version of the same         -> 3.9.0
-//	==3.9.*       any 3.9                              -> 3.9.0
-//	18  18.x  v20.1                                    -> 18.0.0, 18.0.0, 20.1.0
+// Combined constraints are supported:
+//   - Comma or space means AND: the lowest lower bound is used.
+//   - || means OR: the lowest available alternative is used.
 //
-// Rules can be combined:
+// Only the minimum version matters. Upper bounds, exclusions and strict
+// comparison operators are not enforced.
 //
-//	>=3.9,<4      comma or space means AND: take the lower bound  -> 3.9.0
-//	^18 || >=20   || means OR: the lowest choice wins             -> 18.0.0
-//	1.2 - 1.5     a range: take the lower end                     -> 1.2.0
-//
-// Only the lowest allowed version is read. Upper limits ("<4"), exclusions
-// ("!=3.10") and strictness (">3.8" is treated as 3.8) are ignored.
-//
-// If any part of the rule has no usable lower limit (such as "*", "latest"
-// or "<20"), it returns false. The caller should then skip the check rather
-// than guess.
+// It returns false when no usable lower bound can be determined, allowing
+// the caller to skip the check rather than guess.
+
 func ParseMinConstraint(s string) (Version, bool) {
 	s = strings.TrimSpace(s)
 	if s == "" {

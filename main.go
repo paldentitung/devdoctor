@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
+	"devdoctor/internal/analyze"
 	"devdoctor/internal/detect"
 	"devdoctor/internal/registry"
 	"devdoctor/internal/runner"
 	"devdoctor/internal/system"
-	"devdoctor/internal/analyze"
 )
 
 // version is overridden at build time:
@@ -35,11 +35,11 @@ func main() {
 	useColor = colorEnabled(*noColor)
 
 	use, detected, err := resolveTypes(*typeFlag)
-	analyses := analyze.Analyze(".", use)		
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(2)
 	}
+	analyses := analyze.Analyze(".", use)
 
 	results := runner.Run(runner.Select(registry.Default(analyses), use))
 

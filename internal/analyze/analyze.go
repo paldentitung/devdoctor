@@ -55,9 +55,9 @@ type Finding struct {
 // checks.ParseMinConstraint to get the lowest version it allows.
 
 type Constraint struct {
-	Tool   string `json:"tool"`   
-	Raw    string `json:"raw"`    
-	Source string `json:"source"` 
+	Tool   string `json:"tool"`
+	Raw    string `json:"raw"`
+	Source string `json:"source"`
 }
 
 // An Analysis is everything we learned about ONE kind of project.
@@ -73,8 +73,6 @@ type Analysis struct {
 	Warnings       []string    `json:"warnings,omitempty"`        // problems found while reading the files
 }
 
-// HasFramework reports whether a framework with this name was found,
-// for example HasFramework("next").
 func (a Analysis) HasFramework(name string) bool {
 	for _, f := range a.Frameworks {
 		if f.Name == name {

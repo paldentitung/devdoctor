@@ -9,42 +9,51 @@ import (
 
 const mongoPort = 27017
 
-// MongoDB checks that a MongoDB tool is installed and that a server
-// is accepting connections on the default port.
 type MongoDB struct{}
 
 func (MongoDB) Run() checks.Result {
-	// mongosh is the modern client. mongod is the server itself.
-	path, ok := checks.FindInPath("mongosh")
-	if !ok {
-		path, ok = checks.FindInPath("mongod")
-	}
-	if !ok {
+	shellPath, hasShell := checks.FindInPath("mongosh")
+	serverPath, hasServer := checks.FindInPath("mongod")
+
+	if !hasShell && !hasServer {
 		return checks.Failed(
 			"MongoDB",
-			"MongoDB (mongosh or mongod) is not installed or not available in PATH.",
+			"Neither mongosh nor mongod was found in PATH.",
 			"Install MongoDB from https://www.mongodb.com/try/download/community",
 		)
 	}
 
-	version, err := checks.GetVersion(path)
-	if err != nil {
-		return checks.Warning(
-			"MongoDB",
-			"MongoDB was found but its version could not be retrieved.",
-			"Check your MongoDB installation.",
-		)
+	var parts []string
+	if hasServer {
+		parts = append(parts, "mongod "+firstLine(serverPath))
 	}
-	// mongod prints several lines. Keep the first one.
-	version = strings.TrimSpace(strings.SplitN(version, "\n", 2)[0])
+	if hasShell {
+		parts = append(parts, "mongosh "+firstLine(shellPath))
+	}
+	installed := strings.Join(parts, ", ")
 
 	if !checks.CanConnect("localhost", mongoPort) {
 		return checks.Warning(
 			"MongoDB",
-			fmt.Sprintf("MongoDB %s is installed, but no server is listening on port %d.", version, mongoPort),
-			"Start MongoDB (macOS: brew services start mongodb-community, Linux: sudo systemctl start mongod, Windows: start the MongoDB service).",
+			fmt.Sprintf("%s installed, but nothing is listening on port %d.", installed, mongoPort),
+			"Start MongoDB (Linux: sudo systemctl start mongod, macOS: brew services start mongodb-community, Windows: start the MongoDB service), or ignore this if you use a remote or Docker instance.",
 		)
 	}
 
-	return checks.Passed("MongoDB", fmt.Sprintf("MongoDB %s, server reachable on port %d", version, mongoPort))
+	return checks.Passed("MongoDB", fmt.Sprintf("%s, server reachable on port %d", installed, mongoPort))
+}
+
+// firstLine runs `<path> --version` and returns the first non-empty line,
+// or "(version unknown)" if it fails.
+func firstLine(path string) string {
+	out, err := checks.GetVersion(path)
+	if err != nil {
+		return "(version unknown)"
+	}
+	for _, line := range strings.Split(out, "\n") {
+		if line = strings.TrimSpace(line); line != "" {
+			return line
+		}
+	}
+	return "(version unknown)"
 }

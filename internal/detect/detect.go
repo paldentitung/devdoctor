@@ -55,6 +55,7 @@ func Detect(dir string) []Type {
 	}
 	return found
 }
+
 // Parse turns "node,python" (from --type) into types, rejecting unknown names.
 func Parse(s string) ([]Type, error) {
 	var out []Type
