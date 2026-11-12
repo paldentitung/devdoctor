@@ -55,9 +55,9 @@ type Finding struct {
 // checks.ParseMinConstraint to get the lowest version it allows.
 
 type Constraint struct {
-	Tool   string `json:"tool"`   
-	Raw    string `json:"raw"`    
-	Source string `json:"source"` 
+	Tool   string `json:"tool"`
+	Raw    string `json:"raw"`
+	Source string `json:"source"`
 }
 
 // An Analysis is everything we learned about ONE kind of project.
@@ -72,7 +72,6 @@ type Analysis struct {
 	Scripts        []string    `json:"scripts,omitempty"`         // commands defined in package.json, e.g. dev, build
 	Warnings       []string    `json:"warnings,omitempty"`        // problems found while reading the files
 }
-
 
 func (a Analysis) HasFramework(name string) bool {
 	for _, f := range a.Frameworks {

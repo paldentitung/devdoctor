@@ -7,7 +7,6 @@ import (
 
 const fallbackPort = 3000
 
-
 var frameworkPorts = map[string]int{
 	"next":      3000,
 	"nuxt":      3000,

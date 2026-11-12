@@ -10,7 +10,6 @@ import (
 // That way each rule is a single word and can be split on spaces safely.
 var opSpaceRe = regexp.MustCompile(`(>=|<=|==|~=|!=|\^|~|>|<|=)\s+`)
 
-
 var lowerBoundOps = []string{">=", "==", "~=", "^", "~", "=", ">"}
 
 // ParseMinConstraint extracts the lowest allowed version from a project

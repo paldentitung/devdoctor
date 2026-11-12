@@ -7,6 +7,7 @@ var minNode = checks.Version{Major: 22}
 type Node struct {
 	Min *checks.Version // the project's requirement; nil means use the default
 }
+
 func (n Node) Run() checks.Result {
 	path, ok := checks.FindInPath("node")
 	if !ok {
@@ -22,8 +23,7 @@ func (n Node) Run() checks.Result {
 	if n.Min != nil {
 		min = *n.Min
 	}
-	
+
 	return checks.MinVersion("Node.js", version, min, "https://nodejs.org")
-	
 
 }

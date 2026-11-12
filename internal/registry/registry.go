@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"devdoctor/internal/analyze"
 	"devdoctor/internal/checks"
 	"devdoctor/internal/database"
 	"devdoctor/internal/detect"
@@ -8,7 +9,6 @@ import (
 	"devdoctor/internal/project"
 	"devdoctor/internal/runtimes"
 	"devdoctor/internal/tools"
-	"devdoctor/internal/analyze"
 )
 
 func Default(analyses []analyze.Analysis) []checks.Group {
