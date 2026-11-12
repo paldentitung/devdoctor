@@ -1,6 +1,6 @@
 package tools
 
-import "devdoctor/internal/checks"
+import "github.com/paldentitung/devdoctor/internal/checks"
 
 // Docker checks that Docker is installed and that its daemon is running.
 type Docker struct{}

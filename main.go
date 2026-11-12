@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
-	"devdoctor/internal/analyze"
-	"devdoctor/internal/detect"
-	"devdoctor/internal/registry"
-	"devdoctor/internal/runner"
-	"devdoctor/internal/system"
+	"github.com/paldentitung/devdoctor/internal/analyze"
+	"github.com/paldentitung/devdoctor/internal/detect"
+	"github.com/paldentitung/devdoctor/internal/registry"
+	"github.com/paldentitung/devdoctor/internal/runner"
+	"github.com/paldentitung/devdoctor/internal/system"
 )
 
 // version is overridden at build time:

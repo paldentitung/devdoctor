@@ -1,6 +1,6 @@
 package runtimes
 
-import "devdoctor/internal/checks"
+import "github.com/paldentitung/devdoctor/internal/checks"
 
 var minPython = checks.Version{Major: 3, Minor: 11}
 

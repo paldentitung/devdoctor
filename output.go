@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"devdoctor/internal/checks"
-	"devdoctor/internal/runner"
+	"github.com/paldentitung/devdoctor/internal/checks"
+	"github.com/paldentitung/devdoctor/internal/runner"
 )
 
 // useColor is set once in main, after flags are parsed.

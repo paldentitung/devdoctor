@@ -31,7 +31,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"devdoctor/internal/detect"
+	"github.com/paldentitung/devdoctor/internal/detect"
 )
 
 // A Finding is one thing we learned about the project, plus the proof.

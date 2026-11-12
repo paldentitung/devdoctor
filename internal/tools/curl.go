@@ -3,7 +3,7 @@ package tools
 import (
 	"strings"
 
-	"devdoctor/internal/checks"
+	"github.com/paldentitung/devdoctor/internal/checks"
 )
 
 // Curl checks that curl is installed and reports its version.

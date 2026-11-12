@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"devdoctor/internal/detect"
+	"github.com/paldentitung/devdoctor/internal/detect"
 )
 
 // How to recognise Node frameworks. This is also the order they are

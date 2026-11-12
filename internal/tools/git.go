@@ -1,6 +1,6 @@
 package tools
 
-import "devdoctor/internal/checks"
+import "github.com/paldentitung/devdoctor/internal/checks"
 
 var minGit = checks.Version{Major: 2, Minor: 45}
 

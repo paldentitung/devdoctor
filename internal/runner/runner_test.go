@@ -4,7 +4,7 @@ package runner
 import (
 	"testing"
 
-	"devdoctor/internal/checks"
+	"github.com/paldentitung/devdoctor/internal/checks"
 )
 
 type fakeCheck struct{ result checks.Result }
